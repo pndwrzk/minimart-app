@@ -7,17 +7,22 @@ import { formatRupiah } from "@/lib/utils";
 import { useCart } from "@/hooks/useCart";
 import { isLoggedIn } from "@/lib/auth";
 import { image_host } from "@/lib/constants";
+import { useToast } from "./ui/use-toast";
 
 export type Product = ProductResponse;
 
 type Props = { product: Product };
 
 export const ProductCard: React.FC<Props> = ({ product }) => {
+    const toast = useToast();
   const { addItemToCart, refreshCart, loading } = useCart();
   const handleAddToCart = async () => {
     const isLogged = isLoggedIn();
     if (!isLogged) {
-      alert("Please login to add items to cart");
+      toast({
+        title: "Authentication required",
+        description: "Please log in to access your cart.",
+      });
       return;
     }
     try {
