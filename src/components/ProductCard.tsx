@@ -8,28 +8,33 @@ import { useCart } from "@/hooks/useCart";
 import { isLoggedIn } from "@/lib/auth";
 import { image_host } from "@/lib/constants";
 import { useToast } from "./ui/use-toast";
+import { AxiosError } from "axios";
 
 export type Product = ProductResponse;
 
 type Props = { product: Product };
 
 export const ProductCard: React.FC<Props> = ({ product }) => {
-    const toast = useToast();
+  const toast = useToast();
   const { addItemToCart, refreshCart, loading } = useCart();
   const handleAddToCart = async () => {
     const isLogged = isLoggedIn();
     if (!isLogged) {
       toast({
         title: "Authentication required",
-        description: "Please log in to access your cart.",
+        description: "You need to log in to add items to your cart.",
       });
       return;
     }
     try {
       await addItemToCart({ product_id: product.id });
       await refreshCart();
-    } catch (err: any) {
-      console.error(err.message);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      toast({
+        title: "add to cart failed",
+        description: error.message,
+      });
     }
   };
 

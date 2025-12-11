@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
+import { AxiosError } from "axios";
 
 type Status = "pending" | "paid" | "completed" | "cancelled";
 
@@ -45,9 +46,13 @@ const OrderHistory = () => {
     try {
       const res = await fetchOrders(activeStatus);
       if (res?.data) setOrders(res.data);
-    } catch (err) {
-      console.error(err);
-    }
+     } catch (err) {
+          const error = err as AxiosError<{ message: string }>;
+          toast({
+            title: "fetch order history failed",
+            description: error.message,
+          });
+        }
   };
 
   return (
