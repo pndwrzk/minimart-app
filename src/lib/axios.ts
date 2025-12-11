@@ -63,6 +63,7 @@ export function axiosInstance() {
         const { refreshToken } = getTokenData();
         if (!refreshToken) {
           ClearToken();
+          window.location.reload();
           return Promise.reject(new Error("No refresh token available"));
         }
 
